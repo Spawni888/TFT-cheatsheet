@@ -1,29 +1,13 @@
-# boilerplate
-
-## Project setup
+local setup
+--
 ```
 yarn install
 ```
-
-### Compiles and hot-reloads for development
+front
 ```
-yarn run serve
+yarn serve
 ```
-
-### Compiles and minifies for production
+back
 ```
-yarn run build
+yarn start
 ```
-
-### Run your tests
-```
-yarn run test
-```
-
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
