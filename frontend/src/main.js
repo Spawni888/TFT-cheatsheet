@@ -9,21 +9,21 @@ new Vue({
   render: h => h(App)
 }).$mount('#app');
 
-$("#login-button").click(function(event) {
-  event.preventDefault();
-
-  $(".form").fadeOut(500);
-  $(".wrapper").addClass("form-success");
-  $(".hiddenBlock").delay(500).fadeIn(500);
-});
-
-$("#button").click(function(event) {
-  event.preventDefault();
-
-  $(".form").delay(500).fadeIn(500);
-  $(".wrapper").removeClass("form-success");
-  $(".hiddenBlock").fadeOut(500).delay(500);
-});
+// $("#login-button").click(function(event) {
+//   event.preventDefault();
+//
+//   $(".form").fadeOut(500);
+//   $(".wrapper").addClass("form-success");
+//   $(".hiddenBlock").delay(500).fadeIn(500);
+// });
+//
+// $("#button").click(function(event) {
+//   event.preventDefault();
+//
+//   $(".form").delay(500).fadeIn(500);
+//   $(".wrapper").removeClass("form-success");
+//   $(".hiddenBlock").fadeOut(500).delay(500);
+// });
 
 const chancesTable = [
   {

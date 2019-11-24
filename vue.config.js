@@ -40,7 +40,7 @@ module.exports = {
             ...config.plugins,
             new HtmlWebpackPlugin({
                 filename: 'index.html',
-                favicon:  path.resolve(__dirname, './frontend/favicon.ico'),
+                favicon:  path.resolve(__dirname, './frontend/favicon.png'),
                 template: path.resolve(__dirname, './frontend/index.html'),
                 inject: true
             })

@@ -7,9 +7,7 @@ const serve = require('koa-static');
 const logger = require('koa-logger');
 const config = require('./services/config');
 const readDir = require('recursive-readdir-sync');
-const db = require('./services/db');
 
-db.connect();
 const controllersDir = path.join(__dirname, 'controllers');
 
 const app = new Koa();
