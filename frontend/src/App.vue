@@ -35,7 +35,9 @@
                 <li></li>
                 <li></li>
             </ul>
-            <p class="creator">Created by Hui s Gory</p>
+            <transition name="appear" mode="out-in">
+                <p v-if="pageLoaded" class="creator">Created by Hui s Gory</p>
+            </transition>
         </div>
     </div>
 </template>
@@ -63,8 +65,8 @@
                     this.validateIncomeData();
                     this.pageLoaded = true;
 
-                    console.log(this.chancesTable);
-                    console.log(this.lvlExperience);
+                    // console.log(this.chancesTable);
+                    // console.log(this.lvlExperience);
                 })
                 .catch(err => {
                     this.chancesTable = chancesTable;
@@ -81,8 +83,6 @@
                 this.h2List = [];
             },
             getOneOrMoreCurrent(tier, lvl) {
-                console.log(tier);
-                console.log(lvl);
                 const pool = this.chancesTable.find(item => item.tier === tier);
 
                 const probability = pool.lvlChances.find(tierChances => tierChances.lvl === lvl).probability * 5;
@@ -126,12 +126,13 @@
                     this.h2List.push(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
                     this.h2List.push(`You are already ${lvl + 1}`);
                     console.log(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
-                    console.log(`You are already ${lvl + 1}`);
+                    console.log(`You are level ${lvl + 1} already!`);
+                    return;
                 }
 
                 if (currentLvlProbability <= 0 && nextLvlProbability <= 0) {
                     const possibleLvl = this.getPossibleLvl(tier);
-                    const minProbability = Number(this.getOneOrMoreCurrent(tier, possibleLvl) / 100).toFixed(4);
+                    const minProbability = Number(this.getOneOrMoreCurrent(tier, possibleLvl) * 100).toFixed(3);
                     this.h2List.push(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
                     console.log(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
                     // this.appendNewNodeWithText(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
@@ -146,10 +147,19 @@
 
                 let neededGold = Math.ceil((this.lvlExperience.find(lvlExp => parseInt(lvlExp.lvl) === lvl).xp - xp) / 4);
 
+
                 const canRollCount = neededGold / 2;
                 const x = (currentLvlProbability * canRollCount) / (nextLvlProbability - currentLvlProbability);
                 neededGold += (x * 2);
                 neededGold = Math.round(neededGold);
+
+                if (neededGold <= 0) {
+                    this.h2List.push('Just roll, bro! The chance will be lower next lvl!');
+                    this.h2List.push(`Now the chance is ${Number(currentLvlProbability * 100).toFixed(3)}%`);
+                    console.log('Just roll, bro! The chance will be lower next lvl!');
+                    console.log(`Now the chance is ${Number(currentLvlProbability * 100).toFixed(3)}%`);
+                    return;
+                }
 
                 this.h2List.push('If you have more than ' + neededGold + ' gold level up and roll!');
                 console.log('If you have more than ' + neededGold + ' gold level up and roll!');
