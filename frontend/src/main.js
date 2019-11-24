@@ -125,7 +125,6 @@ function compareProbabilities(tier, lvl, xp) {
   const nextLvlProbability = getOneOrMoreCurrent(tier, lvl + 1);
 
   let neededGold = Math.ceil((lvlExperience[lvl - 1] - xp) / 4);
-  console.log(neededGold);
   const canRollCount = neededGold / 2;
   const x = (currentLvlProbability * canRollCount) / (nextLvlProbability - currentLvlProbability);
   neededGold += (x * 2);
@@ -133,10 +132,8 @@ function compareProbabilities(tier, lvl, xp) {
   neededGold = Math.round(neededGold);
   if (neededGold < 0 || isNaN(neededGold)) {
     appendNewNodeWithText('SO RETARDED QUESTION BRO. REALLY. STOP!!!!');
-    console.log('useless question');
   }
   else {
-    console.log(neededGold + '+  - LEVEL UP');
     appendNewNodeWithText('If u have more than ' + neededGold + ' u can level up');
   }
 

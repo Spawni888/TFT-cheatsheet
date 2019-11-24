@@ -1,22 +1,24 @@
 <template>
     <div id="app">
-        <div class="wrapper" :class="{'form-success': isReady}">
+        <div class="wrapper" :class="{'form-success': pressReady}">
             <transition name="appear" mode="out-in">
                 <div v-if="!pageLoaded" class="lds-roller" key="loadingCircle"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
 
                 <div v-else class="container" key="corePage">
                     <h1>Welcome</h1>
-                        <transition name="appear">
-                            <form key="form1" v-if="isReady" :class="[{'hide-this': !isReady}, 'hiddenBlock']" id="hiddenBlock" @submit.prevent>
-                                <div class="hiddenText" id="hiddenText"></div>
-                                <button type="submit" id="start-button" @click="back">Ok</button>
-                            </form>
-                            <form key="form2" v-else class="form" @submit.prevent>
-                                <input type="number" placeholder="Tier" id="tier">
-                                <input type="number" placeholder="LVL" id="lvl">
-                                <input type="number" placeholder="XP" id="xp">
-                                <button type="submit" id="back-button" @click="start">Ready</button>
-                            </form>
+                    <transition name="fade" mode="out-in">
+                        <form key="main-form" v-if="pressReady" class="hiddenBlock" id="hiddenBlock" @submit.prevent>
+                            <div class="hiddenText" id="hiddenText">
+                                <h2 v-for="(h2, i) in h2List" :key="'h2-' + i">{{ h2 }}</h2>
+                            </div>
+                            <button type="submit" id="start-button" @click="back">Ok</button>
+                        </form>
+                        <form key="second-form" v-else class="form" @submit.prevent>
+                            <input v-model="tier" type="number" placeholder="Tier" id="tier">
+                            <input v-model="lvl" type="number" placeholder="LVL" id="lvl">
+                            <input v-model="xp" type="number" placeholder="XP" id="xp">
+                            <button type="submit" id="back-button" @click="start">Ready</button>
+                        </form>
                     </transition>
                 </div>
             </transition>
@@ -44,8 +46,13 @@
 
     export default {
         data: () => ({
-            isReady: false,
-            pageLoaded: false
+            pressReady: false,
+            pageLoaded: false,
+            h2List: [],
+            tier: null,
+            lvl: null,
+            xp: null
+
         }),
         created() {
             axios.get('/parser')
@@ -53,22 +60,29 @@
                     this.chancesTable = res.data.chancesTable;
                     this.lvlExperience = res.data.lvlExperience;
 
-                    console.log(this.chancesTable);
-                    console.log(this.lvlExperience);
-
                     this.validateIncomeData();
                     this.pageLoaded = true;
+
+                    console.log(this.chancesTable);
+                    console.log(this.lvlExperience);
+                })
+                .catch(err => {
+                    this.chancesTable = chancesTable;
+                    this.lvlExperience = lvlExperience;
                 })
         },
         methods: {
             start() {
-                this.isReady = true;
+                this.pressReady = true;
                 this.startCompare();
             },
             back() {
-                this.isReady = false;
+                this.pressReady = false;
+                this.h2List = [];
             },
             getOneOrMoreCurrent(tier, lvl) {
+                console.log(tier);
+                console.log(lvl);
                 const pool = this.chancesTable.find(item => item.tier === tier);
 
                 const probability = pool.lvlChances.find(tierChances => tierChances.lvl === lvl).probability * 5;
@@ -101,19 +115,32 @@
 
                 const maxXpAtCurrentLvl =  this.lvlExperience.find(expItem => expItem.lvl === lvl).xp;
                 if (xp > maxXpAtCurrentLvl) {
-                    this.appendNewNodeWithText(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
-                    this.appendNewNodeWithText(` Maximum XP at ${lvl} level is ${maxXpAtCurrentLvl} XP.`);
+                    this.h2List.push(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
+                    this.h2List.push(`Maximum XP at ${lvl} level is ${maxXpAtCurrentLvl} XP.`);
+                    console.log(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
+                    console.log(`Maximum XP at ${lvl} level is ${maxXpAtCurrentLvl} XP.`);
+                    // this.appendNewNodeWithText(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
+                    // this.appendNewNodeWithText(` Maximum XP at ${lvl} level is ${maxXpAtCurrentLvl} XP.`);
                     return;
+                } else if (xp === maxXpAtCurrentLvl) {
+                    this.h2List.push(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
+                    this.h2List.push(`You are already ${lvl + 1}`);
+                    console.log(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
+                    console.log(`You are already ${lvl + 1}`);
                 }
 
                 if (currentLvlProbability <= 0 && nextLvlProbability <= 0) {
                     const possibleLvl = this.getPossibleLvl(tier);
                     const minProbability = Number(this.getOneOrMoreCurrent(tier, possibleLvl) / 100).toFixed(4);
-                    this.appendNewNodeWithText(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
+                    this.h2List.push(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
+                    console.log(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
+                    // this.appendNewNodeWithText(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
                     return;
                 }
                 else if (currentLvlProbability === nextLvlProbability && currentLvlProbability !== 0) {
-                    this.appendNewNodeWithText('Your lvl and next lvl have the same chances. Roll now!');
+                    this.h2List.push('Your lvl and next lvl have the same chances. Roll now!');
+                    console.log('Your lvl and next lvl have the same chances. Roll now!');
+                    // this.appendNewNodeWithText('Your lvl and next lvl have the same chances. Roll now!');
                     return;
                 }
 
@@ -124,7 +151,9 @@
                 neededGold += (x * 2);
                 neededGold = Math.round(neededGold);
 
-                this.appendNewNodeWithText('If you have more than ' + neededGold + ' gold level up and roll!');
+                this.h2List.push('If you have more than ' + neededGold + ' gold level up and roll!');
+                console.log('If you have more than ' + neededGold + ' gold level up and roll!');
+                // this.appendNewNodeWithText('If you have more than ' + neededGold + ' gold level up and roll!');
 
             },
             appendNewNodeWithText(text) {
@@ -145,26 +174,31 @@
                 }
             },
             startCompare() {
-                const tier = parseInt(document.getElementById('tier').value);
-                const lvl = parseInt(document.getElementById('lvl').value);
-                const xp =  parseInt(document.getElementById('xp').value);
-                let parentNode = document.body.querySelector('.hiddenText');
+                const tier = parseInt(this.tier);
+                const lvl = parseInt(this.lvl);
+                const xp = parseInt(this.xp);
+                // let parentNode = document.body.querySelector('.hiddenText');
 
 
                 if (tier > 5 || tier < 1 || isNaN(tier)) {
-                    this.appendNewNodeWithText('Tier should be between 1 and 5');
+                    this.h2List.push('Tier should be between 1 and 5');
+                    console.log('Tier should be between 1 and 5');
+                    // this.appendNewNodeWithText('Tier should be between 1 and 5');
                 }
                 if (lvl > 8 || lvl < 2 || isNaN(lvl)) {
-                    this.appendNewNodeWithText('Lvl should be between 2 and 8');
+                    this.h2List.push('Lvl should be between 2 and 8');
+                    console.log('Lvl should be between 2 and 8');
+                    // this.appendNewNodeWithText('Lvl should be between 2 and 8');
                 }
                 if (xp > 64 || xp < 0 || (xp % 2 > 0) || isNaN(xp)) {
-                    this.appendNewNodeWithText('Xp should be an even number between 0 and 64');
+                    this.h2List.push('Xp should be an even number between 0 and 64');
+                    console.log('Xp should be an even number between 0 and 64');
+                    // this.appendNewNodeWithText('Xp should be an even number between 0 and 64');
                 }
 
-                if (parentNode.innerText) {
+                if (this.h2List.length) {
                     return;
                 }
-
                 this.compareProbabilities(tier, lvl, xp);
             }
         }
@@ -216,14 +250,22 @@
         opacity: 0;
     }
 
-    /*@keyframes appear {*/
-    /*    0% {*/
-    /*        opacity: 0;*/
-    /*    }*/
-    /*    100% {*/
-    /*        opacity: 1;*/
-    /*    }*/
-    /*}*/
+
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s ease-in-out;
+    }
+    .fade-enter, .fade-leave-to {
+        opacity: 0;
+    }
+
+    @keyframes appear {
+        0% {
+            opacity: 0;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
 
     .hide-this {
         display: none;
@@ -350,9 +392,9 @@
         margin: 0;
     }
     .hiddenBlock {
-        -webkit-transform: translateY(85px);
+        /*-webkit-transform: translateY(85px);*/
         transform: translateY(85px);
-        transition: all 500ms;
+        /*transition: all 500ms;*/
     }
     .hiddenText {
         margin-bottom: 20px;
@@ -364,6 +406,10 @@
         bottom: 20px;
         text-align: end;
         padding-right: 20px;
+
+        @media (max-height: 300px) {
+            display: none;
+        }
     }
     .wrapper {
         background: #50a3a2;
@@ -376,10 +422,7 @@
     .wrapper.form-success .container h1 {
         transform: translateY(85px);
     }
-    .wrapper.form-success .form{
-        transition-delay: 500ms;
-        display: none;
-    }
+
     .container {
         max-width: 600px;
         margin: 0 auto;
@@ -445,7 +488,7 @@
     }
 
     .form {
-        transition: display 500ms;
+        /*transition: display 500ms;*/
     }
     .bg-bubbles {
         position: absolute;
