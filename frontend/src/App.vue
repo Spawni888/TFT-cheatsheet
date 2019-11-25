@@ -115,6 +115,7 @@
                 console.log('Next lvl probability: ' + nextLvlProbability);
 
                 const maxXpAtCurrentLvl =  this.lvlExperience.find(expItem => expItem.lvl === lvl).xp;
+
                 if (xp > maxXpAtCurrentLvl) {
                     this.h2List.push(`You are a little liar! You can't have ${xp} XP at ${lvl} level!`);
                     this.h2List.push(`Maximum XP at ${lvl} level is ${maxXpAtCurrentLvl} XP.`);
@@ -137,6 +138,9 @@
                     this.h2List.push(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
                     console.log(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
                     // this.appendNewNodeWithText(`You need ${possibleLvl} lvl to get it with ${minProbability}% probability. Lvl up!`);
+                    return;
+                } else if (currentLvlProbability <= 0 && nextLvlProbability > 0) {
+                    this.h2List.push(`You should be ${lvl + 1} level to roll this tier champions!`);
                     return;
                 }
                 else if (currentLvlProbability === nextLvlProbability && currentLvlProbability !== 0) {

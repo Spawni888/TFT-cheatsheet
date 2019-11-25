@@ -7,6 +7,8 @@ const serve = require('koa-static');
 const logger = require('koa-logger');
 const config = require('./services/config');
 const readDir = require('recursive-readdir-sync');
+// const router = require('koa-router');
+// const fs = require('fs');
 
 const controllersDir = path.join(__dirname, 'controllers');
 
@@ -17,8 +19,9 @@ if (process.env.ENV !== 'production') {
     app.use(logger());
 }
 
+console.log(path.join(__dirname,'..', '..', 'dist'));
 app
-    .use(serve(path.join(__dirname, '..', 'dist')))
+    .use(serve(path.join(__dirname, '..', '..', 'dist')))
     .use(bodyParser());
 
 const files = readDir(controllersDir)
