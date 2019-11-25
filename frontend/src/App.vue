@@ -146,8 +146,7 @@
                     return;
                 }
 
-                let neededGold = Math.ceil((this.lvlExperience.find(lvlExp => parseInt(lvlExp.lvl) === lvl).xp - xp) / 4);
-
+                let neededGold = (this.lvlExperience.find(lvlExp => parseInt(lvlExp.lvl) === lvl).xp - xp);
 
                 const canRollCount = neededGold / 2;
                 const x = (currentLvlProbability * canRollCount) / (nextLvlProbability - currentLvlProbability);
