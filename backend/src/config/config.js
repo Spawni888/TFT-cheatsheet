@@ -1,4 +1,4 @@
-let port = process.env.PORT || 3000;
+let port = 3000;
 
 module.exports = {
     app: {
