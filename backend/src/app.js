@@ -7,7 +7,6 @@ const serve = require('koa-static');
 const logger = require('koa-logger');
 const config = require('./services/config');
 const readDir = require('recursive-readdir-sync');
-const port = process.env.PORT || 3000;
 
 const controllersDir = path.join(__dirname, 'controllers');
 
@@ -54,4 +53,4 @@ app
     });
 
 
-app.listen(port, () => console.log(`app spins on ${port}`));
+app.listen(config.app.port, () => console.log(`app spins on ${config.app.port}`));

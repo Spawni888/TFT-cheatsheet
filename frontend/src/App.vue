@@ -71,6 +71,7 @@
                 .catch(err => {
                     this.chancesTable = chancesTable;
                     this.lvlExperience = lvlExperience;
+                    this.pageLoaded = true;
                 })
         },
         methods: {
