@@ -1,6 +1,8 @@
+let port = process.env.PORT || 3000;
+
 module.exports = {
     app: {
-        port: 3000
+        port
     },
     database: {
         host: 'localhost',
