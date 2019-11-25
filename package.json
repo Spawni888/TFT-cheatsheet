@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "start": "nodemon ./backend/src/app.js",
+    "start": "node ./backend/src/app.js",
     "build": "vue-cli-service build"
   },
   "dependencies": {
