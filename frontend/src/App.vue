@@ -421,7 +421,7 @@
         text-align: end;
         padding-right: 20px;
 
-        @media (max-height: 300px) {
+        @media (max-height: 450px) {
             display: none;
         }
     }
