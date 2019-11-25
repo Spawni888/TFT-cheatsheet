@@ -421,7 +421,7 @@
         text-align: end;
         padding-right: 20px;
 
-        @media (max-height: 450px) {
+        @media (max-height: 429px) {
             display: none;
         }
     }
@@ -511,6 +511,7 @@
         width: 100%;
         height: 100%;
         z-index: 1;
+        overflow: hidden;
     }
     .bg-bubbles li {
         position: absolute;
