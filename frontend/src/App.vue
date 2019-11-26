@@ -111,6 +111,7 @@
                 let currentLvlProbability = this.getOneOrMoreCurrent(tier, lvl);
                 let nextLvlProbability = this.getOneOrMoreCurrent(tier, lvl + 1);
 
+
                 console.log('Current lvl probability: ' + currentLvlProbability);
                 console.log('Next lvl probability: ' + nextLvlProbability);
 
@@ -151,10 +152,13 @@
                 }
 
                 let neededGold = (this.lvlExperience.find(lvlExp => parseInt(lvlExp.lvl) === lvl).xp - xp);
+                console.log(neededGold);
 
                 const canRollCount = neededGold / 2;
                 const x = (currentLvlProbability * canRollCount) / (nextLvlProbability - currentLvlProbability);
+                console.log(x);
                 neededGold += (x * 2);
+                console.log(neededGold);
                 neededGold = Math.round(neededGold);
 
                 if (neededGold <= 0) {
@@ -162,6 +166,12 @@
                     this.h2List.push(`Now the chance is ${Number(currentLvlProbability * 100).toFixed(3)}%`);
                     console.log('Just roll, bro! The chance will be lower next lvl!');
                     console.log(`Now the chance is ${Number(currentLvlProbability * 100).toFixed(3)}%`);
+                    return;
+                } else if (neededGold > 120) {
+                    this.h2List.push('Just roll now!');
+                    this.h2List.push('Just roll now! Difference between levels are too low!');
+                    console.log('Just roll now!');
+                    console.log('Just roll now! Difference between levels are too low!');
                     return;
                 }
 
