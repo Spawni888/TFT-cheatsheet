@@ -170,8 +170,8 @@
                 } else if (neededGold > 120) {
                     this.h2List.push('Difference between levels are too low!');
                     this.h2List.push('Just roll now!');
+                    console.log('Difference between levels are too low!');
                     console.log('Just roll now!');
-                    console.log('Just roll now! Difference between levels are too low!');
                     return;
                 }
 
